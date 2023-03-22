@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "fan_mats/base"
+	"$basemapalphaphongmask" "1"
+	"$phong" "1"
+	"$phongexponent" "20"
+	"$phongboost" "0.15"
+	"$phongfresnelranges" "[3 4 6]"
+}
