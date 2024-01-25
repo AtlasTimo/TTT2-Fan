@@ -23,5 +23,5 @@ if SERVER then
     resource.AddFile("materials/fan_mats/base.vmt")
     resource.AddFile("materials/fan_mats/blades.vmt")
 
-    resource.AddFile("materials/VGUI/ttt/weapon_fan_gun.png")
+    resource.AddFile("materials/vgui/ttt/weapon_fan_gun")
 end

@@ -30,7 +30,7 @@ SWEP.WorldModel = "models/fan/w_fan/w_fan.mdl"
 SWEP.ShowViewModel = true
 SWEP.ShowWorldModel = true
 
-SWEP.Icon 		= "VGUI/ttt/weapon_fan_gun.png"
+SWEP.Icon 		= "vgui/ttt/weapon_fan_gun"
 
 SWEP.Base 			= "weapon_tttbase"
 SWEP.Kind 			= WEAPON_EQUIP2
