@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+    "$basetexture" "vgui/ttt/weapon_fan_gun"
+    "$translucent" 1
+    "$vertexalpha" 1
+    "$vertexcolor" 1
+}
