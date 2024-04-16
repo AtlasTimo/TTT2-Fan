@@ -2,7 +2,11 @@ include("shared.lua")
 
 function ENT:Initialize()
     hook.Add("HUDPaint", self, function()
-        if (LocalPlayer():GetTeam() ~= "traitors") then return end
+        if (TTT2) then
+            if (LocalPlayer():GetTeam() ~= "traitors") then return end
+        else
+            if (LocalPlayer():GetRole() ~= ROLE_TRAITOR) then return end
+        end
 
         local screenPos = {}
         local textPos = self:GetPos() + Vector(0, 0, 30)
