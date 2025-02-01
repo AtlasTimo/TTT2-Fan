@@ -25,6 +25,11 @@ function CLGAMEMODESUBMENU:Populate(parent)
 		decimal = 0
 	})
 
+	form:MakeCheckBox({
+		label = "label_fan_show_range",
+		serverConvar = "ttt_fan_show_range"
+	})
+
 	form:MakeSlider({
 		label = "label_fan_range",
 		serverConvar = "ttt_fan_range",
@@ -46,6 +51,14 @@ function CLGAMEMODESUBMENU:Populate(parent)
 		min = 0.1,
 		max = 5,
 		decimal = 1
+	})
+
+	form2:MakeSlider({
+		label = "label_fan_prop_health",
+		serverConvar = "ttt_fan_health",
+		min = 1,
+		max = 1000,
+		decimal = 0
 	})
 
 	local form3 = vgui.CreateTTT2Form(parent, "help_fan_player")

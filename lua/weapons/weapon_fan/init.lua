@@ -18,15 +18,11 @@ function SWEP:PrimaryAttack()
     if (angle >= 5 or angle <= -5) then return end
 
     local fanEnt = ents.Create("ent_ttt_fan")
-
-    fanEnt:Spawn()
+    fanEnt:SetPos(trace.HitPos + Vector(0, 0, 30))
+    fanEnt:SetAngles(Angle(0, ow:EyeAngles()[2] - 90, 0))
     fanEnt:SetOwner(ow)
-
-    local spawnPos = trace.HitPos + Vector(0, 0, 30)
-
-    fanEnt:SetPos(spawnPos)
-    local modelAngle = Angle(0, ow:EyeAngles()[2] - 90, 0)
-    fanEnt:SetAngles(modelAngle)
+    fanEnt:Spawn()
+    fanEnt:Activate()
 
     ow:StripWeapon("weapon_fan")
 end

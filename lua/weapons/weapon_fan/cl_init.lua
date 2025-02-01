@@ -1,11 +1,12 @@
 include("shared.lua")
 
-function SWEP:PrimaryAttack()
-
-end
-
 local material = Material("vgui/white")
-local color = Color(0, 255, 0)
+local colorgreen = Color(0, 255, 0)
+local colorred = Color(205, 0, 0)
+
+function SWEP:Initialize()
+    self:CreateGhostModel()
+end
 
 function SWEP:PostDrawViewModel()
 	local ow = self:GetOwner()
@@ -20,17 +21,52 @@ function SWEP:PostDrawViewModel()
     local angle = math.acos(upVec:GetNormalized():Dot(traceNormal:GetNormalized()))
     angle = math.deg(angle)
 
+	local colortoapply = colorgreen
 	if (angle >= 5 or angle <= -5) then
-		color = Color(255, 0, 0)
-	else
-		color = Color(0, 255, 0)
+		colortoapply = colorred
 	end
 
-	local traceHitPos = trace.HitPos
-	local quality = 20
+	local spawnpos = trace.HitPos + Vector(0, 0, 30)
 
-	cam.Start3D()
-	render.SetMaterial(material)
-	render.DrawWireframeSphere(traceHitPos, 10, quality, quality, color, true)
-	cam.End3D()
+	if IsValid(self.GhostModel) then
+        self.GhostModel:SetPos(spawnpos)
+        self.GhostModel:SetAngles(Angle(0, ow:EyeAngles()[2] - 90, 0))
+
+        for i = 0, self.GhostModel:GetNumBodyGroups() - 1 do
+            self.GhostModel:SetSubMaterial(i, "models/debug/debugwhite")
+        end
+
+		cam.Start3D()
+        render.SetColorModulation(colortoapply.r / 255, colortoapply.g / 255, colortoapply.b / 255)
+        render.SetBlend(0.5)
+        self.GhostModel:DrawModel()
+        render.SetBlend(1)
+        render.SetColorModulation(1, 1, 1)
+		render.DrawLine(spawnpos, spawnpos + (ow:GetAimVector() * Vector(1, 1, 0):GetNormalized()) * TTT_FAN.CVARS.fan_range, colorred, true)
+		cam.End3D()
+    end
+end
+
+function SWEP:CreateGhostModel()
+    if IsValid(self.GhostModel) then return end
+    self.GhostModel = ClientsideModel("models/fan/ent_fan/ent_fan.mdl", RENDERGROUP_TRANSLUCENT)
+    if IsValid(self.GhostModel) then
+        self.GhostModel:SetNoDraw(true)
+    end
+end
+
+function SWEP:RemoveGhostModel()
+    if IsValid(self.GhostModel) then
+        self.GhostModel:Remove()
+        self.GhostModel = nil
+    end
+end
+
+function SWEP:Holster()
+    self:RemoveGhostModel()
+    return true
+end
+
+function SWEP:OnRemove()
+    self:RemoveGhostModel()
 end
