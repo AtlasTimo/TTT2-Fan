@@ -6,10 +6,18 @@ include("shared.lua")
 function ENT:Initialize()
     self:SetModel("models/fan/ent_fan/ent_fan.mdl")
 	self:PhysicsInit(SOLID_VPHYSICS)
-	self:SetSolid(SOLID_VPHYSICS)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
-	self:PhysWake()
-    self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+	self:SetSolid(SOLID_VPHYSICS)
+	self:SetCollisionGroup(COLLISION_GROUP_WORLD)
+	self:SetHealth(TTT_FAN.CVARS.fan_health)
+
+	local phys = self:GetPhysicsObject()
+
+	if (phys:IsValid()) then
+		phys:Wake()
+	end
+
+	self:SetTrigger(true)
 
 	if (TTT_FAN.CVARS.fan_use_sound) then
 		sound.Add({
@@ -67,4 +75,8 @@ function ENT:Grounded()
 		return true
 	end
 	return false
+end
+
+function ENT:OnTakeDamage(dmginfo)
+	print("Fan: Damage")
 end

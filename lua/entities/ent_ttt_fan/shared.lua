@@ -1,4 +1,6 @@
+ENT.Base = "base_gmodentity"
 ENT.Type = "anim"
-ENT.Base = "base_anim"
 
 ENT.PrintName = "Fan"
+
+ENT.Spawnable = true
