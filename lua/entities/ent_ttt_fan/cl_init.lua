@@ -24,8 +24,9 @@ function ENT:Initialize()
         screenPos = textPos:ToScreen()
         cam.End3D()
 
+        local distance = (self:GetPos() - LocalPlayer():GetPos()):Length() * 0.01905
         cam.Start2D()
-        draw.DrawText("Fan\n" .. tostring(math.floor((self:GetPos() - LocalPlayer():GetPos()):Length())), "Default", screenPos.x, screenPos.y, color, TEXT_ALIGN_CENTER)
+        draw.DrawText("Fan\n" .. string.format("%.2f m", distance), "Default", screenPos.x, screenPos.y, color, TEXT_ALIGN_CENTER)
         cam.End2D()
 
         if (not LocalPlayer():IsLineOfSightClear(self:GetPos()) || not TTT_FAN.CVARS.fan_show_range) then return end
