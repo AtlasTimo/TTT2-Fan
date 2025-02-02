@@ -13,3 +13,16 @@ hook.Add("KeyPress", "AlignFanOnMagnetoStickRelease", function(ply, key)
 
     end
 end)
+
+hook.Add("EntityTakeDamage", "FanDamageCheck", function(target, dmg)
+    local attacker = dmg:GetAttacker()
+    if ((dmg:IsBulletDamage() or dmg:IsExplosionDamage()) and target:GetName() == "ttt_fan") then
+        local fanHealth = target:GetNWInt("health", TTT_FAN.CVARS.fan_health)
+        fanHealth = fanHealth - dmg:GetDamage()
+        if (fanHealth <= 0) then
+            target:RemoveFan()
+        else
+            target:SetNWInt("health", fanHealth)
+        end
+    end
+end)
