@@ -11,7 +11,6 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetCollisionGroup(COLLISION_GROUP_NONE)
-	self:SetHealth(TTT_FAN.CVARS.fan_health)
 	self.affectedPlayersTable = {}
 
 	local phys = self:GetPhysicsObject()
@@ -106,6 +105,51 @@ function ENT:Grounded()
 	return false
 end
 
-function ENT:OnTakeDamage(dmginfo)
-	print("Fan: Damage")
+function ENT:OnTakeDamage() 
+	local fanHealth = self:GetNWInt("health")
+	local percentHealth = fanHealth / TTT_FAN.CVARS.fan_health * 100
+	if (percentHealth <= 20) then
+		self:CreateFanFire()
+	end
+end
+
+function ENT:RemoveFan()
+	if not IsValid(self) then return end
+
+    local explosionPos = self:GetPos()
+
+    -- Erzeuge den Explosionseffekt
+    local effectData = EffectData()
+    effectData:SetOrigin(explosionPos)
+    effectData:SetMagnitude(5) -- Stärke des Effekts
+    effectData:SetScale(1) -- Skalierung des Effekts
+    effectData:SetRadius(256) -- Radius der Explosion
+
+    util.Effect("Explosion", effectData, true, true) -- Standard-Explosionseffekt
+
+    -- Explosion Sound abspielen
+    sound.Play("ambient/explosions/explode_4.wav", explosionPos, 100, 100) -- Explosion Sound
+
+	self.FireEffect:Remove()
+	self.sound:Stop()
+	self:Remove()
+end
+
+function ENT:CreateFanFire()
+    if not IsValid(self) or self.FireEffect then return end
+
+    local fire = ents.Create("env_fire")
+    fire:SetPos(self:GetPos()) -- Setze Position auf den Fan
+    fire:SetKeyValue("health", "30") -- Lebensdauer des Feuers
+    fire:SetKeyValue("firesize", "64") -- Größe des Feuers
+    fire:SetKeyValue("fireattack", "4") -- Schaden pro Sekunde (falls gewünscht)
+    fire:SetKeyValue("spawnflags", "128") -- 128 = Unendlich lange brennen
+    fire:SetKeyValue("StartDisabled", "0")
+    fire:SetKeyValue("ignitionpoint", "0")
+    fire:SetKeyValue("damagescale", "1") -- Standard-Schaden
+    fire:Spawn()
+    fire:Activate()
+    fire:Fire("StartFire", "", 0)
+
+    self.FireEffect = fire -- Speichere das Feuer-Entity im Fan
 end
