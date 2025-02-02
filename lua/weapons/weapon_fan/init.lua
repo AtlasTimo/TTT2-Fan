@@ -20,9 +20,8 @@ function SWEP:PrimaryAttack()
     local fanEnt = ents.Create("ent_ttt_fan")
     fanEnt:SetPos(trace.HitPos + Vector(0, 0, 30))
     fanEnt:SetAngles(Angle(0, ow:EyeAngles()[2] - 90, 0))
-    fanEnt:SetOwner(ow)
+    fanEnt.Owner = ow
     fanEnt:Spawn()
-    fanEnt:Activate()
 
     ow:StripWeapon("weapon_fan")
 end
