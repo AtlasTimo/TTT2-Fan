@@ -5,9 +5,11 @@ local color = Color(206, 0, 0)
 function ENT:Initialize()
     net.Receive("TTT2_Fan_OwnerPopup", function()
         local icon = Material("vgui/ttt/weapon_fan_gun.png") -- Lade das Material
+        local victim = net.ReadPlayer()
+        print(victim)
 
         MSTACK:AddColoredImagedMessage(
-            "Earned 1 Credit",
+            "You killed " .. victim:GetName(),
             Color(205, 0, 0),
             icon,
             "Fan"

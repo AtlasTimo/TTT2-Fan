@@ -19,15 +19,12 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 
-	hook.Add("PlayerDeath", "ttt_fan_check_player_fall_damage", function(victim, inflictor, attacker)
-		if (not (self.Owner:IsPlayer() or self.Owner:Alive() or self.Owner:GetObserverMode() == OBS_MODE_NONE)) then return end
-		if (inflictor:GetClass() == "worldspawn" and victim:LastHitGroup() == HITGROUP_GENERIC) or (inflictor:GetClass() == "trigger_hurt" and attacker:GetClass() == "trigger_hurt") then
-			for _, data in pairs(self.affectedPlayersTable) do
-				if (data.player.AccountID == victim.AccountID && data.lastAffectedTime + 5 >= CurTime()) then
-					self.Owner:AddCredits(1)
-					net.Start("TTT2_Fan_OwnerPopup")
-    				net.Send(self.Owner)
-				end
+	hook.Add("EntityTakeDamage", "ttt_fan_set_attacker_on_damage", function(target, dmg)
+		if (not dmg:IsFallDamage()) then return end
+		for _, data in pairs(self.affectedPlayersTable) do
+			if (data.player.AccountID == target.AccountID && data.lastAffectedTime + 5 >= CurTime()) then
+				dmg:SetAttacker(self.Owner)
+				dmg:SetInflictor(self)
 			end
 		end
 	end)
