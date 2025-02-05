@@ -1,3 +1,5 @@
+util.AddNetworkString("TTT2_Fan_OwnerPopup")
+
 hook.Add("KeyPress", "AlignFanOnMagnetoStickRelease", function(ply, key)
     if (key ~= IN_ATTACK2) then return end
     if (IsValid(ply) and ply:Alive() and ply:GetObserverMode() == OBS_MODE_NONE and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zm_carry") then
@@ -32,8 +34,8 @@ hook.Add("PlayerDeath", "ttt_fan_check_player_fall_damage", function(victim, inf
     if push and math.max(push.t or 0) >= CurTime() - 5 and push.wep == "ent_ttt_fan" then
         local fanowner = push.att
         if fanowner:IsValid() and fanowner:IsActive() and fanowner:Alive() then
-            fanowner:AddCredits(1)
             net.Start("TTT2_Fan_OwnerPopup")
+            net.WritePlayer(victim)
             net.Send(fanowner)
         end
     end
