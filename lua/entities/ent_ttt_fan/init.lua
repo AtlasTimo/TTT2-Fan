@@ -19,19 +19,6 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 
-	hook.Add("PlayerDeath", "ttt_fan_check_player_fall_damage", function(victim, inflictor, attacker)
-		if (not (self.Owner:IsPlayer() or self.Owner:Alive() or self.Owner:GetObserverMode() == OBS_MODE_NONE)) then return end
-		if (inflictor:GetClass() == "worldspawn" and victim:LastHitGroup() == HITGROUP_GENERIC) or (inflictor:GetClass() == "trigger_hurt" and attacker:GetClass() == "trigger_hurt") then
-			for _, data in pairs(self.affectedPlayersTable) do
-				if (data.player.AccountID == victim.AccountID && data.lastAffectedTime + 5 >= CurTime()) then
-					self.Owner:AddCredits(1)
-					net.Start("TTT2_Fan_OwnerPopup")
-    				net.Send(self.Owner)
-				end
-			end
-		end
-	end)
-
 	if (TTT_FAN.CVARS.fan_use_sound) then
 		sound.Add({
 			name = "fan_sound",
@@ -66,21 +53,8 @@ function ENT:Think()
 		if v:IsPlayer() then
 			if (not v:IsLineOfSightClear(self:GetPos())) then continue end
 			v:SetVelocity((TTT_FAN.CVARS.fan_strength / 10) * self.richtungsVektor + Vector(0, 0, 100));
-			local alreadyExists = false
 
-			for _, data in pairs(self.affectedPlayersTable) do
-				if data.player:AccountID() == v:AccountID() then
-					alreadyExists = true
-					break
-				end
-			end
-
-			if not alreadyExists then
-				table.insert(self.affectedPlayersTable, {
-					player = v,
-					lastAffectedTime = CurTime()
-				})
-			end
+			v.was_pushed = { att = self.Owner, t = CurTime(), wep = self:GetClass() }
 		else
 			if (not TTT_FAN.CVARS.fan_effect_props) then continue end
 			local trace = util.QuickTrace(self:GetPos(), v:GetPos() - self:GetPos(), self)
