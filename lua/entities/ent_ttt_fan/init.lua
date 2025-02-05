@@ -3,8 +3,6 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-util.AddNetworkString("TTT2_Fan_OwnerPopup")
-
 function ENT:Initialize()
     self:SetModel("models/fan/ent_fan/ent_fan.mdl")
 	self:PhysicsInit(SOLID_VPHYSICS)
