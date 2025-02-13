@@ -17,6 +17,7 @@ function ENT:Initialize()
     
     hook.Add("HUDPaint", self, function()
         if (LocalPlayer():GetTeam() ~= "traitors") then return end
+        local fanEnabled = self:GetNWBool("fanenabled")
 
         local screenPos = {}
         local textPos = self:GetPos() + Vector(0, 0, 30)
@@ -26,11 +27,12 @@ function ENT:Initialize()
         cam.End3D()
 
         local distance = (self:GetPos() - LocalPlayer():GetPos()):Length() * 0.01905
+        local fanEnabledText = fanEnabled and "(active)" or "(inactive)"
         cam.Start2D()
-        draw.DrawText("Fan\n" .. string.format("%.2f m", distance), "Default", screenPos.x, screenPos.y, color, TEXT_ALIGN_CENTER)
+        draw.DrawText("Fan " .. fanEnabledText .. "\n" .. string.format("%.2f m", distance), "Default", screenPos.x, screenPos.y, color, TEXT_ALIGN_CENTER)
         cam.End2D()
 
-        if (not LocalPlayer():IsLineOfSightClear(self:GetPos()) || not TTT_FAN.CVARS.fan_show_range) then return end
+        if (not LocalPlayer():IsLineOfSightClear(self:GetPos()) or not TTT_FAN.CVARS.fan_show_range or not fanEnabled) then return end
 
         cam.Start3D()
         render.DrawLine(self:GetPos(), self:GetPos() + self:GetRight() * TTT_FAN.CVARS.fan_range * -1, color, true)

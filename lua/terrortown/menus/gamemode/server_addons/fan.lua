@@ -53,8 +53,13 @@ function CLGAMEMODESUBMENU:Populate(parent)
 		decimal = 1
 	})
 
+	form2:MakeCheckBox({
+		label = "label_fan_invincible",
+		serverConvar = "ttt_fan_invincible"
+	})
+
 	form2:MakeSlider({
-		label = "label_fan_prop_health",
+		label = "label_fan_health",
 		serverConvar = "ttt_fan_health",
 		min = 1,
 		max = 1000,
