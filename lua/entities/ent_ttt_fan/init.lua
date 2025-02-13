@@ -10,6 +10,8 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetCollisionGroup(COLLISION_GROUP_NONE)
 	self.affectedPlayersTable = {}
+	self.enabled = true
+	self:SetNWBool("fanenabled", self.enabled)
 
 	local phys = self:GetPhysicsObject()
 
@@ -27,6 +29,7 @@ function ENT:Initialize()
 			sound = "fan_sound.wav"
 		})
 	
+		self.nextActiveStateChange = CurTime() + 2,5
 		self.sound = CreateSound(self, "fan_sound", nil)
 		self.sound:Play()
 		self.sound:ChangePitch(30, 2)
@@ -35,7 +38,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if (not self:Grounded()) then return end
+	if (not self:Grounded() or not self.enabled) then return end
 
 	local velocity = self:GetVelocity()
 	if (velocity:Length() > 0.1) then return end
@@ -78,6 +81,7 @@ function ENT:Grounded()
 end
 
 function ENT:OnTakeDamage() 
+	if (TTT_FAN.CVARS.fan_invincible) then return end
 	local fanHealth = self:GetNWInt("health")
 	local percentHealth = fanHealth / TTT_FAN.CVARS.fan_health * 100
 	if (percentHealth <= 20) then
@@ -124,4 +128,21 @@ function ENT:CreateFanFire()
     fire:Fire("StartFire", "", 0)
 
     self.FireEffect = fire -- Speichere das Feuer-Entity im Fan
+end
+
+function ENT:Use( activator )
+	if (not TTT_FAN.CVARS.fan_use_sound) then return end
+	if (CurTime() <= self.nextActiveStateChange) then return end
+	if (not (activator:IsPlayer() and activator:Alive() and activator:GetObserverMode() == OBS_MODE_NONE)) then return end
+	self.nextActiveStateChange = CurTime() + 2,5
+
+	if (self.enabled) then
+		self.sound:ChangePitch(30, 2)
+		self.enabled = false
+		self:SetNWBool("fanenabled", false)
+	else
+		self.sound:ChangePitch(150, 2)
+		self.enabled = true
+		self:SetNWBool("fanenabled", true)
+	end
 end
